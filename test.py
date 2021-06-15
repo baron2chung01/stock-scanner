@@ -13,4 +13,3 @@ df = web.DataReader('TSLA', 'yahoo', datetime(2020,1,1).strftime('%Y-%m-%d'), da
 print(df)
 print(df.index.get_loc(datetime(2020,1,7).strftime('%Y-%m-%d')))
 print(datetime(2020,1,1).strftime('%Y-%m-%d'))
-print('prinprintprintprint')
