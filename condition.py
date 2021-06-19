@@ -78,9 +78,9 @@ def VCP_Detection(df,current_price,time=-1):
             cond = VolDecreasing and IsPivot_cond and VolDryUp
 
         if cond == 1:
-            print('Pivot Length: ',PivotLength)
-        break
-
+            # print('Pivot Length: ',PivotLength)
+            break
+    # print(f'VCP Condition: {cond}')
     return cond
 
 def calculate_macd(df, PRICE_NAME, period1, period2, period3): 
@@ -104,6 +104,8 @@ def macd_cond(array1,array2,time=-1):
     # array1: MACD linel
     # MACD > 0 and MACD increasing
     if (array1[time] > array2[time]) and array2[time] > 0:
+        # print(f'MACD cond: 1')
         return 1
     else:
+        # print(f'MACD cond: 0')
         return 0

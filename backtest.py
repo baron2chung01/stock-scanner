@@ -6,42 +6,58 @@ import math
 import numpy as np
 from sklearn.linear_model import LinearRegression
 from datetime import datetime, timedelta
+from stock_screener import *
 from stock_screener_backtest import *
 from condition import *
 
-startyear = 2020
+startyear = 2021
 startmonth = 1
-startday = 8
+startday = 3
 
-endyear = 2020
-endmonth = 1
-endday = 14
+endyear = 2021
+endmonth = 3
+endday = 1
 
 start = datetime(startyear,startmonth,startday)
 end = datetime(endyear,endmonth,endday)
 test_Date = start
 # end = datetime.now()
-# scan stock_list
+# scan stock_list   
 stock_list = []
 
 while test_Date <= end:
     if (0 <= test_Date.weekday() <= 4):
-        scan_temp = stock_screen_backtest('midcap', test_Date)
-
+        try:
+            scan_temp = []
+            scan_Date = (test_Date - timedelta(days=1)).strftime('%Y-%m-%d')
+            print(scan_Date)
+            scan_temp_df = pd.read_csv('output\Stocks worth buying_midcap_{}.csv'.format(scan_Date), header = None)
+            TEMP = scan_temp_df.values.tolist()[1:]
+            for stock in TEMP:
+                stock = stock[0][3:]
+                scan_temp.append(stock)
+            print(scan_temp)
+        # except:
+        #     scan_temp = stock_screen_backtest('midcap', test_Date)
+        except:
+            print('')
         for stock in scan_temp:
-
             if stock not in stock_list:
                 stock_list.append(stock)
-
+    print(stock_list)
     test_Date = test_Date + timedelta(days = 1)
 
-
+print(stock_list)
 
 # stock_list = ['SNAP','TSM','TSLA'] # please loop this as well
 
 for stock in stock_list:
 
-    df = web.DataReader(stock, 'yahoo', (start - timedelta(days=365)).strftime('%Y-%m-%d'), end.strftime('%Y-%m-%d'))
+    try:
+        df = web.DataReader(stock, 'yahoo', (start - timedelta(days=366)).strftime('%Y-%m-%d'), (end - timedelta(days=1)).strftime('%Y-%m-%d'))
+    except:
+        print('This stock is under 1-year-old')
+        break
     # get data
     df['MovingAverage200'] = df['Close'].rolling(window=200).mean()
     ma200_increasing = df['MovingAverage200'].tolist()
@@ -51,7 +67,7 @@ for stock in stock_list:
     num = 0 
     percentchange = []
 
-    for i in range(df.index.get_loc(start.strftime('%Y-%m-%d')),len(df.index)):
+    for i in range(250,len(df.index)):
         close = df['Close'][i]
         ma50 = MA(df,50,'Close')[i]
         ma150 = MA(df,150,'Close')[i]

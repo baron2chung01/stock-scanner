@@ -13,7 +13,7 @@ from condition import *
 # 3: 200-day MA line is trending up for 4-5 months
 def stock_screen(cap,scanDate):
 
-  s_p = pd.read_csv('\\stock_symbols\\{}.csv'.format(cap), delimiter=',')
+  s_p = pd.read_csv('stock_symbols\{}.csv'.format(cap), delimiter=',')
 
   price_list = []
   bought_date = []
@@ -25,7 +25,7 @@ def stock_screen(cap,scanDate):
   count_error = 0
   symbols = s_p['Symbol'].tolist()
   # print(symbols)
-  # symbols = ['TSLA']
+  # symbols = ['GBX', 'NYMT', 'UBA']
 
   todayDate = scanDate
   endDate = todayDate - timedelta(days = 1)
@@ -43,8 +43,8 @@ def stock_screen(cap,scanDate):
       ma50 = MA(df,50,'Close')[-1]
       ma150 = MA(df,150,'Close')[-1]
       ma200 = MA(df,200,'Close')[-1]
-      low52week=LLV(df,252,i)
-      high52week=HHV(df,252,i)
+      low52week=LLV(df,252)
+      high52week=HHV(df,252)
       MACD_line, MACD_Signal_line = calculate_macd(df, 'Close', 26, 12, 9)
 
       print(f'Stock: {symbols[i]}')
@@ -76,6 +76,8 @@ def stock_screen(cap,scanDate):
 
 
   futuexport = pd.DataFrame(futu_list)
-  filepath = '\\output\\Stocks worth buying_{}_{}.csv'.format(cap,endDate.strftime('%Y-%m-%d'))
+  filepath = 'output\Stocks worth buying_{}_{}.csv'.format(cap,endDate.strftime('%Y-%m-%d'))
   futuexport.to_csv(filepath, index = False)
-  return stocks_worth_buying,price_list,bought_date
+  print(stocks_worth_buying)
+  print(f'Scanning of {scanDate} is complete')
+  return stocks_worth_buying
