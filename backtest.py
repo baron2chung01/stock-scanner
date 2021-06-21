@@ -16,7 +16,7 @@ startday = 3
 
 endyear = 2021
 endmonth = 3
-endday = 1
+endday = 29
 
 start = datetime(startyear,startmonth,startday)
 end = datetime(endyear,endmonth,endday)
@@ -49,15 +49,16 @@ while test_Date <= end:
 
 print(stock_list)
 
+totalR_list = [0] * len(stock_list)
 # stock_list = ['SNAP','TSM','TSLA'] # please loop this as well
 
-for stock in stock_list:
+for index, stock in enumerate(stock_list):
 
     try:
-        df = web.DataReader(stock, 'yahoo', (start - timedelta(days=366)).strftime('%Y-%m-%d'), (end - timedelta(days=1)).strftime('%Y-%m-%d'))
+        df = web.DataReader(stock, 'yahoo', (start - timedelta(days=366)).strftime('%Y-%m-%d'), (end).strftime('%Y-%m-%d'))
     except:
         print('This stock is under 1-year-old')
-        break
+        continue
     # get data
     df['MovingAverage200'] = df['Close'].rolling(window=200).mean()
     ma200_increasing = df['MovingAverage200'].tolist()
@@ -83,7 +84,7 @@ for stock in stock_list:
                 pos = 1
                 print("Buying now at " + str(bp))
 
-        elif (bp > 0 and (close > 1.1 * bp or close < 0.94 * bp)):
+        elif (bp > 0 and (close > 1.1 * bp or close < 0.95 * bp)):
             # take profit @ 10%, stop loss @ 6%
             if (pos == 1):
                 pos = 0
@@ -119,6 +120,7 @@ for stock in stock_list:
         totalR = totalR * ((i/100) + 1)
 
     totalR = round((totalR - 1) * 100, 2)
+    totalR_list[index] = totalR
 
     if(ng > 0):
         avgGain = gains/ng
@@ -152,3 +154,5 @@ for stock in stock_list:
     print("Total return over " + str(ng + nl) + " trades: " + str(totalR) +"%" )
     print()
     # print("Example return Simulating "+str(n)+ " trades: "+ str(nReturn)+"%" )
+
+print(f'Total return of backtest is {sum(totalR_list)} %')
