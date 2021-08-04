@@ -19,7 +19,7 @@ def REF(df, N, time=-1):
     return df[time-N]
 
 def condition_1245(current_price,ma50,ma150,ma200):
-    if current_price > ma50 > ma150 > ma200:
+    if current_price>ma150>ma200 and ma50>ma200 and current_price>ma50:
         return True
     else:
         return False
@@ -35,7 +35,6 @@ def condition_67(current_price,low52week,high52week):
         return True
     else:
         return False
-    # data.get_quote_yahoo(tickers)['marketCap']
 
 def vol_range(df,time=-1):
     if df['Volume'][time] > 50000:

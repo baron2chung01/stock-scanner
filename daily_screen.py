@@ -9,6 +9,6 @@ from condition import *
 from stock_screener import *
 from stock_screener_backtest import *
 
-stock_screen('midcap', datetime.now())
-stock_screen('smallcap', datetime.now())
+stock_screen('small',datetime.now())
+stock_screen('mid',datetime.now())
 

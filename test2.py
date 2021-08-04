@@ -12,7 +12,7 @@ from finviz.screener import Screener
 # 1,2,4,5: current price > 50-day > 150-day MA > 200-day MA
 # 6,7: current price > 1.3*52weeklow and 0.75*52weekhigh < current price < 1.25*52weekhigh
 # 3: 200-day MA line is trending up for 4-5 months
-def stock_screen(cap,scanDate):
+def stock_screen(scanDate):
 
     price_list = []
     bought_date = []
@@ -22,14 +22,12 @@ def stock_screen(cap,scanDate):
     count_good = 0
     count_bad = 0
     count_error = 0
-    filter_cap = 'cap_' + cap
-    filters = [filter_cap,'sh_curvol_o200', 'sh_price_o10', 'ta_highlow52w_a30h', 'ta_sma200_sb50', 'ta_sma50_pa']
+
+    filters = ['sh_curvol_o200', 'sh_price_o10', 'ta_highlow52w_a30h', 'ta_sma200_sa50', 'ta_sma50_pa']
     stock_list = Screener(filters=filters, table='Performance')
     symbols = []
-    
     for stock in stock_list:
         symbols.append(stock['Ticker'])
-
 
     todayDate = scanDate
     endDate = todayDate - timedelta(days = 1)
@@ -78,7 +76,6 @@ def stock_screen(cap,scanDate):
             count_error=count_error+1
             stocks_error.append(symbols[i])
 
-    print(futu_list)
 
     futuexport = pd.DataFrame(futu_list)
     filepath = 'output\Stocks worth buying_{}_{}.csv'.format(cap,endDate.strftime('%Y-%m-%d'))
